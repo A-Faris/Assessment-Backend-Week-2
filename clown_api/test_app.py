@@ -36,6 +36,19 @@ class TestAPIClownGet:
                    for c in data)
 
     @patch("app.conn")
+    def test_get_clown_returns_id(self, mock_conn, test_app, fake_clown):
+        """Tests that the /clown/17 endpoint returns id on a GET request"""
+
+        mock_conn.cursor.return_value\
+            .__enter__.return_value\
+            .fetchall.return_value = [fake_clown]
+
+        res = test_app.get("/clown/17")
+        data = res.json
+
+        assert data[0]["clown_id"] == 17
+
+    @patch("app.conn")
     def test_get_clown_accesses_database(self, mock_conn, test_app):
         """Tests that the /clown endpoint makes expected calls to the database
         on a GET request."""

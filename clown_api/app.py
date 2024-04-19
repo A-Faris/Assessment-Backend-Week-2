@@ -21,7 +21,7 @@ def index() -> Response:
 
 
 @app.route("/clown", methods=["GET", "POST"])
-def get_clowns() -> Response:
+def get_clowns():
     """Returns a list of clowns in response to a GET request;
     Creates a new clown in response to a POST request."""
 
@@ -40,10 +40,15 @@ def get_clowns() -> Response:
                     LEFT JOIN review USING(clown_id)
                     GROUP BY clown_id, clown_name, speciality_name
                     ORDER BY average_rating {order}""")
+
             data = cur.fetchall()
+            if not data:
+                return jsonify({"error": "No clowns found"}), 404
+
             for clown in data:
-                if clown["num_of_ratings"] == 0:
+                if clown.get("num_of_ratings") == 0:
                     del clown["num_of_ratings"], clown["average_rating"]
+
             return jsonify(data)
     else:
         data = request.json
@@ -73,15 +78,22 @@ def get_clowns_with_id(clown_id: int):
     """Returns the clown's details in response to a GET request"""
     with conn.cursor() as cur:
         cur.execute(
-            """SELECT clown_id, clown_name, speciality_name
+            """SELECT clown_id, clown_name, speciality_name,
+                    AVG(rating) AS average_rating,
+                    COUNT(rating) AS num_of_ratings
                 FROM clown
                 JOIN speciality USING(speciality_id)
-                WHERE clown_id = %s;""", (clown_id,))
-        cur.close()
+                LEFT JOIN review USING(clown_id)
+                WHERE clown_id = %s
+                GROUP BY clown_id, clown_name, speciality_name""", (clown_id,))
 
         data = cur.fetchall()
+        cur.close()
         if not data:
             return jsonify({"error": "No clowns found"}), 404
+
+        if data[0].get("num_of_ratings") == 0:
+            del data[0]["num_of_ratings"], data[0]["average_rating"]
 
         return jsonify(data)
 
