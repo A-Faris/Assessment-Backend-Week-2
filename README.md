@@ -32,11 +32,13 @@ Run tests (including the full coverage report) with `pytest --cov-report term-mi
 
 The clown API is JSON-based; **all responses should be in JSON format** only.
 
-| Route    | Method | Response                                   |
-| -------- | ------ | ------------------------------------------ |
-| `/`      | `GET`  | Returns a welcome message                  |
-| `/clown` | `GET`  | Returns a list of clowns and their details |
-| `/clown` | `POST` | Creates a new clown in the database        |
+| Route                | Method | Response                                    |
+| -------------------- | ------ | ------------------------------------------- |
+| `/`                  | `GET`  | Returns a welcome message                   |
+| `/clown`             | `GET`  | Returns a list of clowns and their details  |
+| `/clown`             | `POST` | Creates a new clown in the database         |
+| `/clown/[id]`        | `GET`  | Returns a clown with their details          |
+| `/clown/[id]/review` | `POST` | Creates a rating on a clown in the database |
 
 ## Tasks
 
