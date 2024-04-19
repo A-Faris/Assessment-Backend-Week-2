@@ -112,7 +112,8 @@ class TestAPIClownPost:
 
     @patch("app.conn")
     def test_post_clown_returns_404_on_empty(self, mock_conn, test_app, fake_clown):
-        """Tests that the /clown/[id]/review endpoint returns 404 on a POST request with an empty body."""
+        """Tests that the /clown/[id]/review endpoint returns 404 on a POST request
+        with an empty body."""
 
         mock_conn.cursor.return_value\
             .__enter__.return_value\
